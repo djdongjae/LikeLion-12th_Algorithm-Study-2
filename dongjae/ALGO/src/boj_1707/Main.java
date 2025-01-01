@@ -34,33 +34,40 @@ public class Main {
                 graph.get(b).add(a);
             }
 
-            if (bfs()) sb.append("YES").append("\n");
+            boolean flag = true;
+            for (int x = 1; x <= v; x++) {
+                if (visited[x] == 0) {
+                    if (!bfs(x)) {
+                        flag = false;
+                        break;
+                    }
+                }
+            }
+
+            if (flag) sb.append("YES").append("\n");
             else sb.append("NO").append("\n");
         }
 
         System.out.println(sb);
     }
 
-    public static boolean bfs() {
+    public static boolean bfs(int start) {
         Queue<Integer> q = new LinkedList<>();
-        for (int i = 1; i <= v; i++) {
-            if (visited[i] == 0) {
-                q.offer(i);
-                visited[i] = 1;
-                while (!q.isEmpty()) {
-                    int now = q.poll();
-                    for (int next : graph.get(now)) {
-                        if (visited[next] == 0) {
-                            visited[next] = (visited[now] == 1) ? 2 : 1;
-                            q.offer(next);
-                        } else if (visited[next] == visited[now]) {
-                            return false;
-                        }
-                    }
+        visited[start] = 1;
+        q.offer(start);
+        while (!q.isEmpty()) {
+            int now = q.poll();
+            for (int i = 0; i < graph.get(now).size(); i++) {
+                int next = graph.get(now).get(i);
+                if (visited[next] == 0) {
+                    if (visited[now] == 1) visited[next] = 2;
+                    else visited[next] = 1;
+                    q.offer(next);
+                } else {
+                    if (visited[next] == visited[now]) return false;
                 }
             }
         }
         return true;
     }
-
 }
